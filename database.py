@@ -1,12 +1,11 @@
 # Чтение и запись из/в хранилище (база данных)
-
-DATA_BASE_FILE_NAME = "films.txt"
+import json
 
 
 def ReadFilmsFromDB() -> list:
     global DATA_BASE_FILE_NAME
     data = ""
-    with open(DATA_BASE_FILE_NAME, "r", encoding="utf-8") as file:
+    with open("films.txt", "r", encoding="utf-8") as file:
         data = file.read()
     data = data.split("\n")
     data = [line for line in data if line != '']
@@ -22,32 +21,31 @@ def ReadFilmsFromDB() -> list:
         else:
             res.append(s.split())
     return res
-    
+
+def ReadFilmsFromJsonFile(file_name : str) -> any:
+    with open(file_name, 'r', encoding='utf-8') as file:
+       return json.load(file)
+    pass
 
 
-
-def WriteFilmsInDB(films : list) -> None:
-    """
-    Функция записывает список фильмов в текстовый файл
-    films - двойной список
-    """
-    # global DATA_BASE_FILE_NAME
-    
-    res_file = "add_film.txt" # запись внутрь этого файла data в формате, как и в файле films.txt
-
-    with open(res_file, 'w', encoding="utf-8") as file:
-        for f in films: # каждая строка. общий список без кавычек. инфа про каждый фильм  
-            film_str = ""
-            if len(f[0].strip().split()) > 1:
-                film_str = f"'{f[0]}' {f[1]} {f[2]}\n"
-            else:
-                film_str = f"{f[0]} {f[1]} {f[2]}\n"
-            file.write(film_str)
+def WriteFilmsInJsonFile(file_name : str, films : any) -> None:
+    with open(file_name, "w", encoding="utf-8") as file:
+        json.dump(films, file, ensure_ascii=False, indent=4)
     pass
             
 
 if __name__ == "__main__":
     data = ReadFilmsFromDB()
-    data.append(["Стражи галактики", "Комедия", "10"])
-    print(data)
-    WriteFilmsInDB(data)
+    normal_data = []
+    for f in data:
+        if len(f) != 3:
+            continue
+        film_dict = dict()
+        film_dict["name"] = f[0]
+        film_dict["fanre"] = f[1]
+        film_dict["rating"] = int(f[2])
+        normal_data.append(film_dict)
+    print(data) 
+    print()
+    print(normal_data)
+    WriteFilmsInJsonFile("films.json", normal_data)
