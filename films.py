@@ -119,7 +119,7 @@ def main(films):
         elif cmd == 3: # Вывести фильмы по рейтингу
            print_films_by_rating(films)
         elif cmd == 4: # Запись в файл
-            database_old.WriteFilmsInDB(films)
+            database.WriteFilmsInJsonFile(films, 'temp.json')
         elif cmd == 5: # Добавить фильм
             films.append(read_film())   
         elif cmd == 6: # Выйти
